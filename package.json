@@ -1,0 +1,19 @@
+{
+  "name": "node.js-lab",
+  "version": "1.0.0",
+  "description": "ITRex Group Node.js Lab | Test task",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Iragemini/Node.js-Lab.git"
+  },
+  "author": "Irina Karavaichyk",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Iragemini/Node.js-Lab/issues"
+  },
+  "homepage": "https://github.com/Iragemini/Node.js-Lab#readme"
+}
