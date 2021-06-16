@@ -57,6 +57,9 @@ function calculate() {
   if (!value) value = 0;
   let savedValue = localStorage.getItem('result') || 0;
   let savedValueBYN = localStorage.getItem('BYN') || 0;
+  if (savedValue === 0) {
+    throw new Error('Выберите валюту');
+  }
   let valuePerOne = +savedValueBYN / +savedValue;
   return (valuePerOne * +value).toFixed(4);
 }
@@ -69,8 +72,13 @@ function init() {
 }
 
 result.onchange = function () {
-  let resultValue = calculate();
-  BYN.value = resultValue;
+  try {
+    let resultValue = calculate();
+    BYN.value = resultValue;
+  } catch (e) {
+    alert(e.message);
+    result.value = '';
+  }
 };
 result.onkeypress = function (evt) {
   let charCode = parseCharCode(evt);
