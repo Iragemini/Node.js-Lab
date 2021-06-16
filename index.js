@@ -29,17 +29,15 @@ async function getSelectedCurrency(id) {
   }
   const response = await fetch(`${API}/rates/${id}`);
   const data = await response.json();
-  console.log(data);
-  console.log('result', data.Cur_OfficialRate);
   BYN.value = data.Cur_OfficialRate;
   result.value = data.Cur_Scale;
   result.placeholder = data.Cur_Abbreviation;
   resultLabel.textContent = data.Cur_Abbreviation;
   localStorage.setItem('result', data.Cur_Scale);
+  localStorage.setItem('BYN', data.Cur_OfficialRate);
 }
 
 currencyList.onchange = function (e) {
-  console.log('e', e.target.value);
   getSelectedCurrency(e.target.value);
 };
 
@@ -56,19 +54,24 @@ function getDate() {
 
 function calculate() {
   let value = result.value;
-  let savedValue = localStorage.getItem('result') || 0;
   if (!value) value = 0;
-  let bynValue = BYN.value;
-  console.log(`${value}/${bynValue}/${savedValue}`);
+  let savedValue = localStorage.getItem('result') || 0;
+  let savedValueBYN = localStorage.getItem('BYN') || 0;
+  let valuePerOne = +savedValueBYN / +savedValue;
+  return (valuePerOne * +value).toFixed(4);
 }
 
 function init() {
   getCurrencyList();
   getDate();
   localStorage.removeItem('result');
+  localStorage.removeItem('BYN');
 }
 
-result.addEventListener('change', calculate);
+result.onchange = function () {
+  let resultValue = calculate();
+  BYN.value = resultValue;
+};
 result.onkeypress = function (evt) {
   let charCode = parseCharCode(evt);
   let eventType = evt.type;
