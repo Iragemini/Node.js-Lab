@@ -35,6 +35,7 @@ async function getSelectedCurrency(id) {
   result.value = data.Cur_Scale;
   result.placeholder = data.Cur_Abbreviation;
   resultLabel.textContent = data.Cur_Abbreviation;
+  localStorage.setItem('result', data.Cur_Scale);
 }
 
 currencyList.onchange = function (e) {
@@ -53,9 +54,59 @@ function getDate() {
   date.innerHTML = todayDMY;
 }
 
+function calculate() {
+  let value = result.value;
+  let savedValue = localStorage.getItem('result') || 0;
+  if (!value) value = 0;
+  let bynValue = BYN.value;
+  console.log(`${value}/${bynValue}/${savedValue}`);
+}
+
 function init() {
   getCurrencyList();
   getDate();
+  localStorage.removeItem('result');
+}
+
+result.addEventListener('change', calculate);
+result.onkeypress = function (evt) {
+  let charCode = parseCharCode(evt);
+  let eventType = evt.type;
+  if (charCode == 13) return false;
+  if (evt.altKey || evt.ctrlKey) {
+    return true;
+  }
+  if (evt.shiftKey && (evt.altKey || evt.ctrlKey)) {
+    return true;
+  }
+  if (eventType == 'keypress') {
+    let checkCode = evt.charCode;
+    if (typeof checkCode != 'undefined') {
+      charCode = checkCode;
+      return (charCode > 47 && charCode < 58) || charCode == 0;
+    }
+    checkCode = evt.which;
+    if (typeof checkCode != 'undefined') {
+      charCode = checkCode;
+      return (charCode > 47 && charCode < 58) || charCode == 0 || charCode == 8;
+    }
+    return charCode > 47 && charCode < 58;
+  }
+  if (eventType == 'keydown') {
+    return (
+      (charCode > 95 && charCode < 106) ||
+      (charCode > 47 && charCode < 58) ||
+      (charCode > 32 && charCode < 41) ||
+      charCode == 8 ||
+      charCode == 46
+    );
+  }
+  return false;
+};
+function parseCharCode(evt) {
+  let c = evt.keyCode ? evt.keyCode : evt.which ? evt.which : 0;
+  if (evt.type != 'keydown') return evt.charCode ? evt.charCode : c;
+  else return c;
 }
 
 document.addEventListener('DOMContentLoaded', init);
