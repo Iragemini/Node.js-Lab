@@ -44,3 +44,4 @@ The solution should be an array of strings with a sequence of necessary actions 
 ```
 ['left', 'top','top','left','left','bottom','bottom','left']`
 ```
+## Solution: https://github.com/Iragemini/Node.js-Lab/tree/task2
