@@ -24,36 +24,78 @@ let startX;
 let startY;
 let endX;
 let endY;
+let exit = [];
+
+function initVisited() {
+  for (let i = 0; i < visited.length; i++) {
+    for (let j = 0; j < visited[i].length; j++) {
+      visited[i][j] = false;
+    }
+  }
+}
 
 function init(maze) {
   if (!Array.isArray(maze) || !maze.length) {
     return false;
   }
 
-  for (let i = 0; i < maze.length; i++) {
+  for (let i = 0, len = maze.length; i < len; i++) {
+    let row = maze[i];
+    if (!row.length) break;
+    let rowLength = row.length;
+    if (row.includes('+')) {
+      if (
+        i === 0 ||
+        i === len - 1 ||
+        row[0] === '+' ||
+        row[rowLength - 1] === '+'
+      ) {
+        if (i === 0 || i === len - 1) {
+          row.forEach((element, index) => {
+            if (element === '+') {
+              exit.push([i, index]); // i - endX, index - endY
+            }
+          });
+        } else {
+          row.forEach((element, index) => {
+            if (element === '+' && (index === 0 || index === rowLength - 1)) {
+              exit.push([i, index]); // i - endX, index - endY
+            }
+          });
+        }
+      }
+    }
+  }
+  if (exit.length === 0) {
+    console.log('The maze has no exit');
+    return false;
+  }
+  for (let i = 0, len = maze.length; i < len; i++) {
     let row = maze[i];
     height = row.length;
     if (row.includes('0')) {
       startX = i;
       startY = row.indexOf('0');
     }
-    if (row.includes('+') && row[0] === '+') {
-      endX = i;
-      endY = 0;
-    }
-
     for (let j = 0; j < visited.length; j++) {
       visited[j] = new Array(row.length);
     }
   }
-  for (let i = 0; i < visited.length; i++) {
-    for (let j = 0; j < visited[i].length; j++) {
-      visited[i][j] = false;
+
+  let way = false;
+  for (let i = 0; i < exit.length; i++) {
+    initVisited();
+    answer = [];
+    endX = exit[i][0];
+    endY = exit[i][1];
+    if (findWay(startX, startY)) {
+      way = true;
+      break;
     }
   }
-  let way = findWay(startX, startY);
+
   if (!way) {
-    console.log('no way');
+    console.log('The maze has no exit');
     return false;
   }
   console.log('answer: ', answer.reverse());
